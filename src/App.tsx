@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ChakraProvider, Container, Box } from '@chakra-ui/react';
 import StartScreen from './components/StartScreen';
 import QuestionScreen from './components/QuestionScreen';
 import ResultScreen from './components/ResultScreen';
@@ -13,6 +14,7 @@ const sampleQuestions: Question[] = [
     questionText: '法人向けのサービスを作りたいですか？',
     yesScore: 5,
     noScore: -3,
+    type: 'business'
   },
   {
     id: 2,
@@ -20,6 +22,7 @@ const sampleQuestions: Question[] = [
     questionText: 'サブスクリプション型の収益モデルに興味がありますか？',
     yesScore: 3,
     noScore: -1,
+    type: 'business'
   },
   {
     id: 3,
@@ -27,6 +30,7 @@ const sampleQuestions: Question[] = [
     questionText: 'モバイルアプリよりもWebアプリの方が得意ですか？',
     yesScore: 2,
     noScore: -2,
+    type: 'tech'
   },
   {
     id: 4,
@@ -34,6 +38,7 @@ const sampleQuestions: Question[] = [
     questionText: '個人ユーザーをターゲットにしたいですか？',
     yesScore: -3,
     noScore: 4,
+    type: 'target'
   },
   {
     id: 5,
@@ -41,8 +46,49 @@ const sampleQuestions: Question[] = [
     questionText: 'ユーザー同士のコミュニケーション機能は重要ですか？',
     yesScore: 2,
     noScore: -1,
+    type: 'feature'
   },
-  // 実際のアプリでは、より多くの質問を追加
+  // 新しい質問を追加
+  {
+    id: 6,
+    category: '技術スタック',
+    questionText: 'AIやML技術を活用したいですか？',
+    yesScore: 4,
+    noScore: -2,
+    type: 'tech'
+  },
+  {
+    id: 7,
+    category: 'ビジネスモデル',
+    questionText: 'グローバル展開を視野に入れていますか？',
+    yesScore: 3,
+    noScore: -1,
+    type: 'business'
+  },
+  {
+    id: 8,
+    category: 'ターゲット',
+    questionText: '若年層（10-20代）をメインターゲットにしたいですか？',
+    yesScore: -2,
+    noScore: 2,
+    type: 'target'
+  },
+  {
+    id: 9,
+    category: '機能',
+    questionText: 'リアルタイムでのデータ更新や通知機能は必要ですか？',
+    yesScore: 3,
+    noScore: -2,
+    type: 'feature'
+  },
+  {
+    id: 10,
+    category: '技術スタック',
+    questionText: 'ブロックチェーン技術に興味がありますか？',
+    yesScore: 4,
+    noScore: -3,
+    type: 'tech'
+  }
 ];
 
 enum AppState {
@@ -58,12 +104,9 @@ const App: React.FC = () => {
   const [totalScore, setTotalScore] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
 
-  // 初期質問をランダムに選択
   useEffect(() => {
-    // 実際のアプリでは、APIからデータを取得するなどの処理を行う
-    // ここでは簡易的にサンプルデータをシャッフル
     const shuffled = [...sampleQuestions].sort(() => 0.5 - Math.random());
-    setQuestions(shuffled.slice(0, 5)); // 5問だけ選択（デモ用）
+    setQuestions(shuffled); // すべての質問を使用
   }, []);
 
   const handleStart = () => {
@@ -100,22 +143,29 @@ const App: React.FC = () => {
             onAnswer={handleAnswer}
           />
         ) : (
-          <div>質問を読み込み中...</div>
+          <Box textAlign="center" p={8}>質問を読み込み中...</Box>
         );
       case AppState.RESULT:
         return (
           <ResultScreen
             answers={answers}
+            questions={questions}
             totalScore={totalScore}
             onRestart={handleStart}
           />
         );
       default:
-        return <div>エラーが発生しました</div>;
+        return <Box textAlign="center" p={8}>エラーが発生しました</Box>;
     }
   };
 
-  return <div className="app">{renderContent()}</div>;
+  return (
+    <ChakraProvider>
+      <Container maxW="container.lg" py={8}>
+        {renderContent()}
+      </Container>
+    </ChakraProvider>
+  );
 };
 
 export default App; 

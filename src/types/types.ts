@@ -4,6 +4,7 @@ export interface Question {
   questionText: string;
   yesScore: number;
   noScore: number;
+  type: 'business' | 'tech' | 'target' | 'feature';
 }
 
 export interface Answer {
